@@ -1,0 +1,8 @@
+Give pets stamina
+
+Add starter classes 
+- Class to find treasures
+- Class to be more lucky with eggs
+- Class to be deal more damage
+
+Verified users
