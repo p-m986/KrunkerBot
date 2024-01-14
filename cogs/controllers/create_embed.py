@@ -4,6 +4,7 @@ class create_embed():
     def __init__(self):
         self.startembed = 0x00FFFF
         self.resultembed = 0x75ff85
+        self.fliperror = 0xff7575
     
     async def createStartEmbed(self, ctx):
         res = discord.Embed(
@@ -33,11 +34,11 @@ class create_embed():
         if heads_count > tails_count:
             winner = target if target_choice == "heads" else author
             author_choice = "tails"
-            file = discord.File("../../Images/heads-removebg.png", filename="image.png")
+            uri = "https://media.discordapp.net/attachments/1194656963821305997/1196051552385892362/heads-removebg.png?ex=65b638cf&is=65a3c3cf&hm=455c2cb8e1ed8aaba031d95d98735daac7f42a2aa14cbe38f09c342ecc3ad147&=&format=webp&quality=lossless&width=450&height=450"
         else:
             winner = target if target_choice == "tails" else author
             author_choice = "heads"
-            file = discord.File("../../Images/tails-removebg.png", filename="image.png")
+            uri = "https://media.discordapp.net/attachments/1194656963821305997/1196051552612401172/tails-removebg.png?ex=65b638cf&is=65a3c3cf&hm=4321bbcaafc0872726692d1eae676042f113357fedd4a19ded623faa5085ff0a&=&format=webp&quality=lossless&width=1100&height=908"
         
         res = discord.Embed(
             title=f"COIN FLIP RESULT",
@@ -48,15 +49,27 @@ class create_embed():
         res.add_field(
             name = "Coin Flips",
             value = f"Heads Occoured: {heads_count}\nTails Occoured: {tails_count}",
+            inline=False
         )
         
         res.add_field(
             name = f"Winner is",
-            value = f"{winner.mention}"
+            value = f"{winner.mention}",
+            inline = False
         )
 
-        res.set_thumbnail(url="attachment://image.png")
+        res.set_thumbnail(url=uri)
 
         res.set_footer(text=f"{discord.utils.utcnow()}")
 
         return res
+    
+    async def createFlipErrorEmbed(self, title, message):
+        res = discord.Embed(
+            title = f"{title}",
+            description = f"{message}",
+            color = self.fliperror,
+            timestamp = discord.utils.utcnow()
+        )
+        return res
+
