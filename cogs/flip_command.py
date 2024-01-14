@@ -12,9 +12,9 @@ class Flip(commands.Cog):
         self.bot = bot
 
 
-    @commands.hybrid_command()
-    @commands.cooldown(2, 3, BucketType.guild)
-    async def flip(self, ctx, bo, target_user: discord.Member = None):
+    @commands.cooldown(2, 3, BucketType(2))
+    @commands.hybrid_command(name="flip", with_app_command=True)
+    async def flip(self, ctx: commands.context, bo, target_user: discord.Member = None):
         """
         How it works
         - Check channel
@@ -26,12 +26,12 @@ class Flip(commands.Cog):
         - Make a result embed
         - Send result embed
         """
-
+        print("Command Recieved") # to be removed
         if {ctx.channel.id} in [1194652099494035558, 1194653134811832451]:
             if ctx.author.get_role(1194577286641492069):
                 await ctx.send(f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
             elif target_user.get_role(1194577286641492069):
-                await ctx.channel.send(f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
+                await ctx.send(f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
             elif target_user.id == ctx.author.id:
                 await ctx.send("*Sorry but you cant gamble with yourself, Refer to (Exaple)[https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448]*")
             else:
