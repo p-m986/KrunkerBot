@@ -2,7 +2,7 @@ from Logs import logevents
 # from database.User import User
 from discord.ext import commands
 from discord.ext.commands import BucketType
-from cogs.controllers.create_embed import createFlipresult
+from cogs.controllers.create_embed import create_embed
 import discord
 import asyncio
 import random
@@ -79,7 +79,7 @@ class Flip(commands.Cog):
 
                     heads_count, tails_count = generate_flip_result(bo = bo)
 
-                    resultEmbed = createFlipresult(heads_count = heads_count, tails_count = tails_count, author = ctx.author, target = target_user, target_choice = target_choice)
+                    resultEmbed = create_embed.createFlipresult(heads_count = heads_count, tails_count = tails_count, author = ctx.author, target = target_user, target_choice = target_choice)
 
                     ctx.send(embed = resultEmbed)
 
