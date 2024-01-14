@@ -12,7 +12,7 @@ class Flip(commands.Cog):
         self.bot = bot
 
 
-    @commands.hybrid_command(aliases=["f", "Flip", "FLIP", "F"])
+    @commands.hybrid_command()
     @commands.cooldown(2, 3, BucketType.guild)
     async def flip(self, ctx, bo, target_user: discord.Member = None):
         """
@@ -29,17 +29,17 @@ class Flip(commands.Cog):
 
         if {ctx.channel.id} in [1194652099494035558, 1194653134811832451]:
             if ctx.author.get_role(1194577286641492069):
-                await ctx.channel.send(f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
+                await ctx.send(f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
             elif target_user.get_role(1194577286641492069):
                 await ctx.channel.send(f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
             elif target_user.id == ctx.author.id:
-                await ctx.channel.send("*Sorry but you cant gamble with yourself, Refer to (Exaple)[https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448]*")
+                await ctx.send("*Sorry but you cant gamble with yourself, Refer to (Exaple)[https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448]*")
             else:
                 if int(bo) % 2 == 0:
-                    await ctx.channel.send("**NO PLS NO**\nEven numbers are not allowed in best of this will lead to draws")
+                    await ctx.send("**NO PLS NO**\nEven numbers are not allowed in best of this will lead to draws")
 
                 elif (int(bo) < 102 and int(bo) > 0):
-                    waitMessage = await ctx.channel.send(f"{target_user.mention}\n*{ctx.author.name} wants to Gamble with you\nMake sure you know the rules to be followed\nType `heads` or `tails` If you wish to choose heads or tails respectively\n*This will automatically close in 20 Seconds if no correct reply found")
+                    waitMessage = await ctx.send(f"{target_user.mention}\n*{ctx.author.name} wants to Gamble with you\nMake sure you know the rules to be followed\nType `heads` or `tails` If you wish to choose heads or tails respectively\n*This will automatically close in 20 Seconds if no correct reply found")
 
                     def check(msg):
                         return msg.author == target_user and msg.channel == ctx.channel and msg.content.lower() in ["tails", "heads", "head", "tail", "Heads", "Head", "Tail", "Tails"]
@@ -48,7 +48,7 @@ class Flip(commands.Cog):
                         msg = await self.bot.wait_for('message', timeout=20.0, check=check)
                     except asyncio.TimeoutError:
                         await waitMessage.delete()
-                        await ctx.channel.send(f"{ctx.author.mention}\n{target_user.name} doesn't want to flip")
+                        await ctx.send(f"{ctx.author.mention}\n{target_user.name} doesn't want to flip")
                         return
                     else:
                         await waitMessage.delete()
@@ -57,7 +57,7 @@ class Flip(commands.Cog):
                         elif msg.content.lower() in ["tails", "tail"]:
                             user_choice = "head"
 
-                        OrignalMessage = await ctx.channel.send(f"{ctx.author.mention} and {target_user.mention} \n Flip starts in few seconds")
+                        OrignalMessage = await ctx.send(f"{ctx.author.mention} and {target_user.mention} \n Flip starts in few seconds")
                         await asyncio.sleep(1.5)
                         
                         for i in range(int(bo)):
@@ -111,11 +111,11 @@ class Flip(commands.Cog):
                             except:
                                 print("DMS Error")
                         await OrignalMessage.delete()
-                        await ctx.channel.send(embed=descriptor)
+                        await ctx.send(embed=descriptor)
                 else:
-                    await ctx.channel.send("*Max* best of is 101 and *Min* is 1\n Why do you think its gonna be a zero")
+                    await ctx.send("*Max* best of is 101 and *Min* is 1\n Why do you think its gonna be a zero")
         else:
-            await ctx.channel.send("Not the best place to do this")
+            await ctx.send("Not the best place to do this")
 
     @flip.error
     async def info_error(self, ctx, error):
