@@ -12,6 +12,7 @@ def generate_flip_result(bo):
     """
     Returns lists which contain either a 1 or 0 in all its indexes
     """
+    print("Generating result")
     head_count = []
     for _ in range(int(bo)):
         num = random.randint(-9, 10)
@@ -22,28 +23,35 @@ def generate_flip_result(bo):
     return head_count, bo - head_count
 
 class Buttons(discord.ui.View):
-    def __init__(self, target_user, *, timeout=20):
+    def __init__(self, author, target_user, heads_count, tails_count, *, timeout=20):
         super().__init__(timeout=timeout)
         self.target_choice = None
+        self.author = author
         self.target_user = target_user
+        self.heads_count = heads_count
+        self.tails_count = tails_count
     
     @discord.ui.button(label = "Heads", style = discord.ButtonStyle.blurple)
-    async def gray_button(self,button:discord.ui.Button,interaction:discord.Interaction):
-        if interaction.author == self.target_user:
+    async def gray_button(self,interaction:discord.Interaction, button:discord.ui.Button):
+        if interaction.user == self.target_user:
+            interaction.defer()
             button.style = discord.ButtonStyle.green
             self.target_choice = "heads"
             button.disabled = True
-            await interaction.response.edit_message(content = f"Chodse Heads", view = self)
-            await self.stop()
+            resultEmbed = create_embed.createFlipresult(heads_count = self.heads_count, tails_count = self.tails_count, author = self.author, target = self.target_user, target_choice = self.target_choice)
+            await interaction.response.edit_message(content = f"Chose Heads", view = self, embed = resultEmbed)
+            self.stop()
     
     @discord.ui.button(label = "Tails", style = discord.ButtonStyle.blurple)
-    async def tails_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.author == self.target_user:
+    async def tails_button(self, interaction:discord.Interaction, button:discord.ui.Button):
+        if interaction.user == self.target_user:
+            interaction.defer()
             button.style = discord.ButtonStyle.green
             self.target_choice = "tails"
             button.disabled = True
-            await interaction.response.edit_message(content = "Chose Tails", view = self)
-            await self.stop()
+            resultEmbed = create_embed.createFlipresult(heads_count = self.heads_count, tails_count = self.tails_count, author = self.author, target = self.target_user, target_choice = self.target_choice)
+            await interaction.response.edit_message(content = "Chose Tails", view = self, embed = resultEmbed)
+            self.stop()
 
 class Flip(commands.Cog):
     def _init_(self, bot):
@@ -76,17 +84,10 @@ class Flip(commands.Cog):
                     await ctx.send("**NO PLS NO**\nEven numbers are not allowed in best of this will lead to draws")
 
                 elif (int(bo) < 102 and int(bo) > 0):
-                    view = Buttons(target_user = target_user)
+                    heads_count, tails_count = generate_flip_result(bo = bo)
+                    view = Buttons(author = ctx.author, target_user = target_user, heads_count = heads_count, tails_count = tails_count)
                     await ctx.send(content = f"{target_user.mention}\n**{ctx.author.mention} wants to bet on coinflip with you**\nMake sure you know the rules to be followed\nBest of: {bo}\nChoose `heads` or `tails`\n*This will automatically close in 20 Seconds if no response found*", view = view)
                     await view.wait()
-                    target_choice = view.target_choice
-                    author_choice = "heads" if target_choice == "tails" else "tails"
-
-                    heads_count, tails_count = generate_flip_result(bo = bo)
-
-                    resultEmbed = create_embed.createFlipresult(heads_count = heads_count, tails_count = tails_count, author = ctx.author, target = target_user, target_choice = target_choice)
-
-                    ctx.send(embed = resultEmbed)
 
                 else:
                     await ctx.send("*Max* best of is 101 and *Min* is 1\n Why do you think its gonna be a zero")

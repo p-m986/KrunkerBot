@@ -29,6 +29,7 @@ class create_embed():
         return res
     
     async def createFlipresult(self, heads_count, tails_count, author, target, target_choice):
+        print("Creating Embed") # To be removed
         if heads_count > tails_count:
             winner = target if target_choice == "heads" else author
             author_choice = "tails"
