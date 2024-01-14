@@ -22,23 +22,28 @@ def generate_flip_result(bo):
     return head_count, bo - head_count
 
 class Buttons(discord.ui.View):
-    def __init__(self, *, timeout=20):
+    def __init__(self, target_user, *, timeout=20):
         super().__init__(timeout=timeout)
         self.target_choice = None
+        self.target_user = target_user
     
     @discord.ui.button(label = "Heads", style = discord.ButtonStyle.blurple)
     async def gray_button(self,button:discord.ui.Button,interaction:discord.Interaction):
-        button.style = discord.ButtonStyle.green
-        self.target_choice = "heads"
-        button.disabled = True
-        await interaction.response.edit_message(content = f"Chose Heads", view = self)
+        if interaction.author == self.target_user:
+            button.style = discord.ButtonStyle.green
+            self.target_choice = "heads"
+            button.disabled = True
+            await interaction.response.edit_message(content = f"Chodse Heads", view = self)
+            await self.stop()
     
     @discord.ui.button(label = "Tails", style = discord.ButtonStyle.blurple)
     async def tails_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-        button.style = discord.ButtonStyle.green
-        self.target_choice = "tails"
-        button.disabled = True
-        await interaction.response.edit_message(content = "Chose Tails", view = self)
+        if interaction.author == self.target_user:
+            button.style = discord.ButtonStyle.green
+            self.target_choice = "tails"
+            button.disabled = True
+            await interaction.response.edit_message(content = "Chose Tails", view = self)
+            await self.stop()
 
 class Flip(commands.Cog):
     def _init_(self, bot):
@@ -71,7 +76,7 @@ class Flip(commands.Cog):
                     await ctx.send("**NO PLS NO**\nEven numbers are not allowed in best of this will lead to draws")
 
                 elif (int(bo) < 102 and int(bo) > 0):
-                    view = Buttons()
+                    view = Buttons(target_user = target_user)
                     await ctx.send(content = f"{target_user.mention}\n**{ctx.author.mention} wants to bet on coinflip with you**\nMake sure you know the rules to be followed\nBest of: {bo}\nChoose `heads` or `tails`\n*This will automatically close in 20 Seconds if no response found*", view = view)
                     await view.wait()
                     target_choice = view.target_choice
