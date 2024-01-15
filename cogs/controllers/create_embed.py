@@ -6,6 +6,7 @@ class create_embed():
         self.resultembed = 0x75ff85
         self.fliperror = 0xff7575
         self.referEmbed = 0xefff5c
+        self.dicerolltie = 0xefe703
     
     async def createStartEmbed(self, ctx):
         res = discord.Embed(
@@ -44,8 +45,7 @@ class create_embed():
         res = discord.Embed(
             title=f"COIN FLIP RESULT",
             description=f"Coin flip between\n{author.mention}: {author_choice}\n{target.mention}: {target_choice}",
-            color = self.resultembed,
-            timestamp = discord.utils.utcnow(),
+            color = self.resultembed
         )
         res.add_field(
             name = "Coin Flips",
@@ -72,6 +72,34 @@ class create_embed():
             color = self.fliperror,
             timestamp = discord.utils.utcnow()
         )
+        return res
+    
+    async def createDicerollresult(self, author, target_user, res1, res2):
+        flag = None
+        if res1 == res2:
+            color_ = self.dicerolltie
+            winner = "--TIE--"
+            emote = "<a:tie:1194921053441507349>"
+            flag = True
+        elif res1 > res2:
+            color_ = self.resultembed
+            winner = author
+            emote = "<a:win:1195251695895183393>"
+        elif res1 < res2:
+            color_ = self.resultembed
+            winner = target_user
+            emote = "<a:win:1195251695895183393>"
+
+        res = discord.Embed(
+            title = f"DICE ROLL RESULT",
+            description = f"Dice roll between\n{author.mention}: Rolled {res1}\nv/s\n{target_user.mention}: Rolled{res2}",
+            color = color_
+        )
+        res.add_field(
+            name = f"Winner is",
+            value = f"{winner.mention if flag == None else winner} {emote}"
+        )
+        res.set_thumbnail(url = "https://media.discordapp.net/attachments/1194656963821305997/1196426718605480078/angry-birds.png?ex=65b79636&is=65a52136&hm=250f9f3fa49fb02eed1d5a5a90ea6728361cb1284225362e4662ee5106df5bae&=&format=webp&quality=lossless&width=996&height=558")
         return res
 
     async def createReferEmbed(self, title, message):

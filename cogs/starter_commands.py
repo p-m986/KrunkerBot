@@ -70,7 +70,7 @@ class testing(commands.Cog):
         """
         To be changed
         """
-        await ctx.send("This command is not in use")
+        await ctx.send("This command is not in use, Wait for future update!!")
         return
         # await ctx.defer(ephemeral=False)
 
