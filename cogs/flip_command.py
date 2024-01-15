@@ -12,6 +12,7 @@ def generate_flip_result(bo):
     """
     Returns heads and tails count integers
     """
+    print("Generating...")
     head_count = 0
     for i in range(int(bo)):
         num = random.randint(-1, 2)
@@ -19,6 +20,7 @@ def generate_flip_result(bo):
             head_count += 1
         else:
             head_count += 0
+    print("Returning")
     return head_count, int(bo) - head_count
 
 class Buttons(discord.ui.View):
@@ -35,13 +37,13 @@ class Buttons(discord.ui.View):
         for item in self.children:
             item.disabled = True
 
-        await self.delete_original_response()
+        await self.message.edit(content = "Coin Flip timed out", view = self)
     
     @discord.ui.button(label = "Heads", style = discord.ButtonStyle.blurple)
     async def gray_button(self,interaction:discord.Interaction, button:discord.ui.Button):
         if interaction.user == self.target_user:
-            await interaction.delete_original_response()
-            interaction.defer()
+            await self.message.delete()
+            await interaction.response.defer()
             button.style = discord.ButtonStyle.green
             self.target_choice = "heads"
             button.disabled = True
@@ -52,8 +54,8 @@ class Buttons(discord.ui.View):
     @discord.ui.button(label = "Tails", style = discord.ButtonStyle.blurple)
     async def tails_button(self, interaction:discord.Interaction, button:discord.ui.Button):
         if interaction.user == self.target_user:
-            await interaction.delete_original_response()
-            interaction.defer()
+            await self.message.delete()
+            await interaction.response.defer()
             button.style = discord.ButtonStyle.green
             self.target_choice = "tails"
             button.disabled = True
@@ -62,7 +64,7 @@ class Buttons(discord.ui.View):
             self.stop()
 
 class Flip(commands.Cog):
-    def _init_(self, bot):
+    def __init__(self, bot):
         self.bot = bot
         self.create_embed = create_embed()
 
@@ -82,44 +84,51 @@ class Flip(commands.Cog):
         """
         print("Command Recieved") # to be removed
         if ctx.channel.id in [1194652099494035558, 1194653134811832451]: # Channel check
+            print("Channel correct")
             if ctx.author.get_role(1194577286641492069):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", messge = f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
-                await ctx.send(embed = embed)  # Check if author is blacklisted
+                await ctx.reply(embed = embed)  # Check if author is blacklisted
             elif target_user.get_role(1194577286641492069):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", message = f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
-                await ctx.send(embed = embed) # Check if target user is blacklisted
+                await ctx.reply(embed = embed) # Check if target user is blacklisted
             elif target_user.id == ctx.author.id:
+                print("Same user error")
                 embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, Refer to (Exaple)[https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448]*")
-                await ctx.send(embed = embed)
+                print("Sending")
+                await ctx.reply(embed = embed)
             else:
+                print("Checking bo")
                 if int(bo) % 2 == 0:
+                    print("Even bo")
                     embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "**NO PLS NO**\nEven numbers are not allowed in best of this will lead to draws")
-                    await ctx.send(embed = embed)
+                    await ctx.reply(embed = embed)
 
                 elif (int(bo) < 102 and int(bo) > 0):
                     heads_count, tails_count = generate_flip_result(bo = bo)
+                    print("Returning....")
                     view = Buttons(author = ctx.author, target_user = target_user, heads_count = heads_count, tails_count = tails_count)
-                    await ctx.send(content = f"{target_user.mention}\n**{ctx.author.mention} wants to bet on coinflip with you**\nMake sure you know the rules to be followed\nBest of: {bo}\nChoose `heads` or `tails`\n*This will automatically close in 20 Seconds if no response found*", view = view)
+                    view.message = await ctx.reply(content = f"{target_user.mention}\n**{ctx.author.mention} wants to bet on coinflip with you**\nMake sure you know the rules to be followed\nBest of: {bo}\nChoose `heads` or `tails`\n*This will automatically close in 20 Seconds if no response found*", view = view)
                     await view.wait()
-                    view.on_timeout()
 
                 else:
+                    print("Max number error")
                     embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Max* best of is 101 and *Min* is 1\n Why do you think its gonna be a zero")
-                    await ctx.send(embed = embed)
+                    await ctx.reply(embed = embed)
         else:
+            print("Channel Error..")
             embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use #ps99-casino")
-            await ctx.send(embed = embed)
+            await ctx.reply(embed = embed)
 
     @flip.error
     async def info_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             create_embed = create_embed()
             cooldown_embed = create_embed.createFlipErrorEmbed(title = "Command on Cooldown", message = f'This command is on cooldown! Try  again in {round(error.retry_after, 3)} seconds')
-            await ctx.send(embed = cooldown_embed)
+            await ctx.reply(embed = cooldown_embed)
         elif isinstance(error, commands.MemberNotFound):
             create_embed = create_embed()
-            membererror_embed = create_embed.createFlipErrorEmbed(title = "Not a member", title = "This is not a valid user in server or You entered the command incorrect\nUse $fliphelp to see Example")
-            await ctx.send(embed = membererror_embed)
+            membererror_embed = create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+            await ctx.reply(embed = membererror_embed)
 
 async def setup(bot):
     await bot.add_cog(Flip(bot))
