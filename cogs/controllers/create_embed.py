@@ -5,6 +5,7 @@ class create_embed():
         self.startembed = 0x00FFFF
         self.resultembed = 0x75ff85
         self.fliperror = 0xff7575
+        self.referEmbed = 0xefff5c
     
     async def createStartEmbed(self, ctx):
         res = discord.Embed(
@@ -33,7 +34,7 @@ class create_embed():
         print("Creating Embed") # To be removed
         if heads_count > tails_count:
             winner = target if target_choice == "heads" else author
-            author_choice = "heads" if target_choice == "tails" else "tails"
+            author_choice = "tails" if target_choice == "heads" else "heads"
             uri = "https://media.discordapp.net/attachments/1194656963821305997/1196051552385892362/heads-removebg.png?ex=65b638cf&is=65a3c3cf&hm=455c2cb8e1ed8aaba031d95d98735daac7f42a2aa14cbe38f09c342ecc3ad147&=&format=webp&quality=lossless&width=450&height=450"
         else:
             winner = target if target_choice == "tails" else author
@@ -65,13 +66,18 @@ class create_embed():
         return res
     
     async def createFlipErrorEmbed(self, title, message):
-        print("making embed")
         res = discord.Embed(
             title = f"{title}",
             description = f"{message}",
             color = self.fliperror,
             timestamp = discord.utils.utcnow()
         )
-        print("Made")
         return res
 
+    async def createReferEmbed(self, title, message):
+        res = discord.Embed(
+            title = f"{title}",
+            description = f"{message}",
+            color = self.referEmbed,
+            timestamp = discord.utils.utcnow()
+        )

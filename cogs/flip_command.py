@@ -68,8 +68,15 @@ class Flip(commands.Cog):
         self.bot = bot
         self.create_embed = create_embed()
 
-    @commands.cooldown(2, 3, BucketType(2))
-    @commands.hybrid_command(name="flip", with_app_command=True)
+    @commands.cooldown(1, 3, BucketType(2))
+    @commands.hybrid_command(name="htf", with_app_command = True, aliases = ["how to flip", "HOW TO FLIP", "HTF"])
+    async def htf(self, ctx: commands.context):
+        referEmbed = await create_embed.createReferEmbed(title = "How to coinflip?", message = "Refer to [How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How coinflip command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448) ")
+        await ctx.reply(embed = referEmbed)
+
+
+    @commands.cooldown(2, 5, BucketType(2))
+    @commands.hybrid_command(name="flip", with_app_command=True, aliases = ["FLIP", "coinflip", "COINFLIP"])
     async def flip(self, ctx: commands.context, bo, target_user: discord.Member = None):
         """
         How it works
@@ -88,14 +95,19 @@ class Flip(commands.Cog):
             if ctx.author.get_role(1194577286641492069):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", messge = f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
                 await ctx.reply(embed = embed)  # Check if author is blacklisted
+
             elif target_user.get_role(1194577286641492069):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", message = f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
                 await ctx.reply(embed = embed) # Check if target user is blacklisted
-            elif target_user.id == ctx.author.id:
-                print("Same user error")
-                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, Refer to (Exaple)[https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448]*")
-                print("Sending")
+
+            elif bo == None or target_user == None:
+                embed = await self.create_embed.createFlipErrorEmbed(title = "INCOMPLETE COMMAND", message = "*Sorry but your command is incomplete, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
                 await ctx.reply(embed = embed)
+
+            elif target_user.id == ctx.author.id:
+                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
+                await ctx.reply(embed = embed)
+            
             else:
                 print("Checking bo")
                 if int(bo) % 2 == 0:
@@ -123,12 +135,20 @@ class Flip(commands.Cog):
     async def info_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             create_embed = create_embed()
-            cooldown_embed = create_embed.createFlipErrorEmbed(title = "Command on Cooldown", message = f'This command is on cooldown! Try  again in {round(error.retry_after, 3)} seconds')
+            cooldown_embed = await create_embed.createFlipErrorEmbed(title = "Command on Cooldown", message = f'This command is on cooldown! Try  again in {round(error.retry_after, 5)} seconds')
             await ctx.reply(embed = cooldown_embed)
         elif isinstance(error, commands.MemberNotFound):
             create_embed = create_embed()
-            membererror_embed = create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+            membererror_embed = await create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
             await ctx.reply(embed = membererror_embed)
+
+    @htf.error
+    async def cooldown_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            create_embed = create_embed()
+            cooldown_embed = await create_embed.createFlipErrorEmbed(title = "Command on Cooldown", message = f'This command is on cooldown! Try  again in {round(error.retry_after, 3)} seconds')
+            await ctx.reply(embed = cooldown_embed)
+        
 
 async def setup(bot):
     await bot.add_cog(Flip(bot))
