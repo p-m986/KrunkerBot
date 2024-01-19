@@ -6,7 +6,9 @@ from cogs.controllers.create_embed import create_embed
 import discord
 import asyncio
 import random
-from configuration import blacklist_role_id, allowed_channel_ids
+# from configuration import blacklist_role_id, allowed_channel_ids
+blacklist_role_id=1194577286641492069
+allowed_channel_ids=[1194652099494035558, 1194653134811832451]
 
 
 def generate_flip_result(bo):
@@ -78,14 +80,14 @@ class Flip(commands.Cog):
         self.create_embed = create_embed()
 
     @commands.cooldown(1, 3, BucketType(2))
-    @commands.hybrid_command(name="htf", with_app_command = True, aliases = ["how to flip", "HOW TO FLIP", "HTF"])
+    @commands.hybrid_command(name="htf", with_app_command = True, aliases = ["how to flip"])
     async def htf(self, ctx: commands.context):
         referEmbed = await create_embed.createReferEmbed(title = "How to coinflip?", message = "Refer to [How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How coinflip command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448) ")
         await ctx.reply(embed = referEmbed)
 
 
     @commands.cooldown(2, 5, BucketType(2))
-    @commands.hybrid_command(name="flip", with_app_command=True, aliases = ["FLIP", "coinflip", "COINFLIP"])
+    @commands.hybrid_command(name="flip", with_app_command=True, aliases = ["coinflip"])
     async def flip(self, ctx: commands.context, bo, target_user: discord.Member = None):
         """
         How it works

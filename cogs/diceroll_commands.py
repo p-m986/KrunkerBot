@@ -5,15 +5,22 @@ from discord.ext.commands import BucketType
 from cogs.controllers.create_embed import create_embed
 import discord
 import random
-from configuration import blacklist_role_id, allowed_channel_ids
+# from configuration import blacklist_role_id, allowed_channel_ids
+blacklist_role_id=1194577286641492069
+allowed_channel_ids=[1194652099494035558, 1194653134811832451]
 
 def generate_diceroll_result():
-    pass
+    print("Generating")
+    res1 = random.randint(1, 6)
+    res2 = random.randint(1, 6)
+    print("returning")
+    return res1, res2
 
 class Buttons(discord.ui.View):
-    def __init__(self, target_user:discord.Member, res1, res2, *, timeout=20):
+    def __init__(self, author, target_user:discord.Member, res1, res2, *, timeout=20):
         super().__init__(timeout=timeout)
         self.create_embed = create_embed()
+        self.author = author
         self.target_user = target_user
         self.res1 = res1
         self.res2 = res2
@@ -34,7 +41,7 @@ class Buttons(discord.ui.View):
 
             button.style = discord.ButtonStyle.green
 
-            resultEmbed = await self.create_embed.createDicerollresult(author = self.author, target = self.target_user, res1 = self.res1, res2 = self.res2)
+            resultEmbed = await self.create_embed.createDicerollresult(author = self.author, target_user = self.target_user, res1 = self.res1, res2 = self.res2)
             await interaction.followup.send(embed = resultEmbed, view = self)
             self.stop()
     
@@ -54,14 +61,14 @@ class Diceroll(commands.Cog):
         self.create_embed = create_embed()
 
     @commands.cooldown(1, 3, BucketType(2))
-    @commands.hybrid_command(name="htr", with_app_command = True, aliases = ["how to roll", "HOW TO ROLL", "HTR", "htdr", "HTDR"])
+    @commands.hybrid_command(name="htr", with_app_command = True, aliases = ["how to roll", "htdr"])
     async def htr(self, ctx: commands.context):
         referEmbed = await create_embed.createReferEmbed(title = "How to diceroll works?", message = "Refer to [How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How Dice roll command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
         await ctx.reply(embed = referEmbed)
 
 
     @commands.cooldown(2, 5, BucketType(2))
-    @commands.hybrid_command(name="roll", with_app_command=True, aliases = ["ROLL", "diceroll", "DICEROLL"])
+    @commands.hybrid_command(name="roll", with_app_command=True, aliases = ["diceroll"])
     async def roll(self, ctx: commands.context, target_user: discord.Member = None):
         """
         How it works
@@ -93,8 +100,11 @@ class Diceroll(commands.Cog):
                 await ctx.reply(embed = embed)
             
             else:
+                print("Starting")
                 res1, res2 = generate_diceroll_result()
+                print("Returned", res1, res2)
                 view = Buttons(author = ctx.author, target_user = target_user, res1 = res1, res2 = res2)
+                print("Sending")
                 view.message = await ctx.reply(content = f"{target_user.mention}\n**{ctx.author.mention} wants to bet on diceroll with you**\nMake sure you know the rules to be followed\n*This will automatically close in 20 Seconds if no response found*", view = view)
                 await view.wait()
 

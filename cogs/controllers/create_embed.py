@@ -75,6 +75,7 @@ class create_embed():
         return res
     
     async def createDicerollresult(self, author, target_user, res1, res2):
+        print("Making embed")
         flag = None
         if res1 == res2:
             color_ = self.dicerolltie
@@ -92,7 +93,7 @@ class create_embed():
 
         res = discord.Embed(
             title = f"DICE ROLL RESULT",
-            description = f"Dice roll between\n{author.mention}: Rolled {res1}\nv/s\n{target_user.mention}: Rolled{res2}",
+            description = f"Dice roll between\n{author.mention}: Rolled {res1}\nv/s\n{target_user.mention}: Rolled {res2}",
             color = color_
         )
         res.add_field(
@@ -100,6 +101,7 @@ class create_embed():
             value = f"{winner.mention if flag == None else winner} {emote}"
         )
         res.set_thumbnail(url = "https://media.discordapp.net/attachments/1194656963821305997/1196426718605480078/angry-birds.png?ex=65b79636&is=65a52136&hm=250f9f3fa49fb02eed1d5a5a90ea6728361cb1284225362e4662ee5106df5bae&=&format=webp&quality=lossless&width=996&height=558")
+        print("Embed made")
         return res
 
     async def createReferEmbed(self, title, message):

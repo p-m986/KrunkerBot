@@ -82,7 +82,9 @@ async def reload(ctx, cog: str):
 
 async def loadcog():
     for cog in os.listdir("./cogs"):
-        if cog.endswith(".py"):
+        if cog == "configuration.py":
+            continue
+        elif cog.endswith(".py"):
             # try:
             cog = f"cogs.{cog.replace('.py', '')}"
             print(cog)
