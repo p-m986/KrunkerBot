@@ -117,11 +117,14 @@ class tic_tac_toe(commands.Cog):
         
     @commands.cooldown(1, 15, BucketType(1))
     @commands.hybrid_command(name="ttt", with_app_command=True,  aliases = ["tictactoe"])
-    async def ttt(self, ctx: commands.Context, ):
+    async def ttt(self, ctx: commands.Context, target_user: discord.Member = None):
         """
         Tic Tac Toe
         """
-        await ctx.send('Tic Tac Toe: X goes first', view=TicTacToe())
+        if target_user == None:
+            await ctx.reply("Gotta metion a user")
+        view = TicTacToe(target_user)
+        await ctx.send('Tic Tac Toe: X goes first', view=view)
         return
  
 async def setup(bot):
