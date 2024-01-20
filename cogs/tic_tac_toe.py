@@ -26,21 +26,21 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
-            content = "It is now O's turn"
-        elif view.target_user == view.O:
+            content = f"{view.O.mention}'s turn"
+        elif view.current_player == view.O:
             self.style = discord.ButtonStyle.success
             self.label = 'O'
             self.disabled = True
             view.board[self.y][self.x] = view.O
             view.current_player = view.X
-            content = "It is now X's turn"
+            content = f"{view.X.mention}'s turn"
 
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = f'{view.current_player}'
+                content = f'{view.current_player} WON'
             elif winner == view.O:
-                content = f'{view.target_user}'
+                content = f'{view.target_user} WON'
             else:
                 content = "It's a tie!"
 
@@ -59,10 +59,10 @@ class TicTacToe(discord.ui.View):
     O = 1
     Tie = 2
 
-    def __init__(self, target_user: discord.Member):
+    def __init__(self, author, target_user: discord.Member):
         super().__init__()
-        self.current_player = self.X
-        self.target_user = self.O
+        self.current_player = author
+        self.target_user = target_user
         self.board = [
             [0, 0, 0],
             [0, 0, 0],
@@ -117,13 +117,13 @@ class tic_tac_toe(commands.Cog):
         
     @commands.cooldown(1, 15, BucketType(1))
     @commands.hybrid_command(name="ttt", with_app_command=True,  aliases = ["tictactoe"])
-    async def ttt(self, ctx: commands.Context, target_user: discord.Member = None):
+    async def ttt(self, ctx: commands.Context,target_user: discord.Member = None):
         """
         Tic Tac Toe
         """
         if target_user == None:
             await ctx.reply("Gotta metion a user")
-        view = TicTacToe(target_user)
+        view = TicTacToe(ctx.author, target_user)
         await ctx.send('Tic Tac Toe: X goes first', view=view)
         return
  
