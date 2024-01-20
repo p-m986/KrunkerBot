@@ -27,7 +27,7 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
             content = "It is now O's turn"
-        else:
+        elif view.target_user == view.O:
             self.style = discord.ButtonStyle.success
             self.label = 'O'
             self.disabled = True
@@ -38,9 +38,9 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = 'X won!'
+                content = f'{view.current_player}'
             elif winner == view.O:
-                content = 'O won!'
+                content = f'{view.target_user}'
             else:
                 content = "It's a tie!"
 
@@ -59,9 +59,10 @@ class TicTacToe(discord.ui.View):
     O = 1
     Tie = 2
 
-    def __init__(self):
+    def __init__(self, target_user: discord.Member):
         super().__init__()
         self.current_player = self.X
+        self.target_user = self.O
         self.board = [
             [0, 0, 0],
             [0, 0, 0],
@@ -115,7 +116,7 @@ class tic_tac_toe(commands.Cog):
         self.selected_class = None
         
     @commands.cooldown(1, 15, BucketType(1))
-    @commands.hybrid_command(name="start", with_app_command=True,  aliases = ["tictactoe"])
+    @commands.hybrid_command(name="ttt", with_app_command=True,  aliases = ["tictactoe"])
     async def ttt(self, ctx: commands.Context, ):
         """
         Tic Tac Toe
