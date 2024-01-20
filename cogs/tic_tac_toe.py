@@ -20,27 +20,27 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         if state in (view.X, view.O):
             return
 
-        if view.current_player == view.X:
+        if view.current_player == view.author:
             self.style = discord.ButtonStyle.danger
             self.label = 'X'
             self.disabled = True
             view.board[self.y][self.x] = view.X
-            view.current_player = view.O
+            view.current_player = view.target_user
             content = f"{view.O.mention}'s turn"
-        elif view.current_player == view.O:
+        elif view.current_player == view.target_user:
             self.style = discord.ButtonStyle.success
             self.label = 'O'
             self.disabled = True
             view.board[self.y][self.x] = view.O
-            view.current_player = view.X
+            view.current_player = view.author
             content = f"{view.X.mention}'s turn"
 
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = f'{view.current_player} WON'
+                content = f'{view.X.mention} WON'
             elif winner == view.O:
-                content = f'{view.target_user} WON'
+                content = f'{view.O.mention} WON'
             else:
                 content = "It's a tie!"
 
@@ -62,6 +62,7 @@ class TicTacToe(discord.ui.View):
     def __init__(self, author, target_user: discord.Member):
         super().__init__()
         self.current_player = author
+        self.author = author
         self.target_user = target_user
         self.board = [
             [0, 0, 0],
