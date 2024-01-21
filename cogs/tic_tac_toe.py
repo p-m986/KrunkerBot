@@ -17,6 +17,11 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         assert self.view is not None
         view: TicTacToe = self.view
         state = view.board[self.y][self.x]
+
+        # Check if it's the current player's turn
+        if interaction.user != view.current_player:
+            return
+
         if state in (view.X, view.O):
             return
 
@@ -50,6 +55,7 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
             view.stop()
 
         await interaction.response.edit_message(content=content, view=view)
+
 
 
 # This is our actual board View
