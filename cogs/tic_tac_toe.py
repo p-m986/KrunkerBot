@@ -151,13 +151,15 @@ class tic_tac_toe(commands.Cog):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "Self Gamble", messge = f"{ctx.author.mention}Sorry but you cant gamble with yourself")
                 await ctx.reply(embed = embed)
                 return
-            if ctx.author.get_role(blacklist_role_id):
+            elif ctx.author.get_role(blacklist_role_id):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", messge = f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
                 await ctx.reply(embed = embed)  # Check if author is blacklisted
-
+                return
             elif target_user.get_role(blacklist_role_id):
                 embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", message = f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
                 await ctx.reply(embed = embed) # Check if target user is blacklisted
+                return
+            else:
                 view = TicTacToe(ctx.author, target_user)
                 await ctx.send(f'Tic Tac Toe:{ctx.author.mention} goes first', view=view)
                 await view.wait()
