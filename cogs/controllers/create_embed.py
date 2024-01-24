@@ -142,10 +142,15 @@ class create_embed():
 
 
     async def createReferEmbed(self, title, message):
+
+        print("Making embed")
+        print(title)
+        print(message)
         res = discord.Embed(
             title = f"{title}",
             description = f"{message}",
             color = self.referEmbed,
             timestamp = discord.utils.utcnow()
         )
+        print("returning")
         return res
