@@ -90,7 +90,7 @@ class TicTacToe(discord.ui.View):
     async def on_timeout(self) -> None:
         for item in self.children:
             item.disabled = True
-        ttt_timeout_embed = await self.create_embed.createTictactoeTimeout(self.auther, self.target_user, self.current_player)
+        ttt_timeout_embed = await self.create_embed.createTictactoeTimeout(self.author, self.target_user, self.current_player)
         await self.message.edit(content="", view = self, embed = ttt_timeout_embed)
 
     def check_board_winner(self):
