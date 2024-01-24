@@ -6,6 +6,8 @@ from cogs.controllers.create_embed import create_embed
 from typing import List
 import discord
 
+blacklist_role_id=1194577286641492069
+allowed_channel_ids=[1194652099494035558, 1194653134811832451]
 
 class TicTacToeButton(discord.ui.Button['TicTacToe']):
     def __init__(self, x: int, y: int):
@@ -69,8 +71,8 @@ class TicTacToe(discord.ui.View):
     O = 1
     Tie = 2
 
-    def __init__(self, author, target_user: discord.Member):
-        super().__init__()
+    def __init__(self, author, target_user: discord.Member, timeout=15):
+        super().__init__(timeout=timeout)
         self.current_player = author
         self.author = author
         self.target_user = target_user
@@ -131,24 +133,45 @@ class tic_tac_toe(commands.Cog):
         self.bot = bot
         self.logger = logevents()
         self.selected_class = None
+        self.create_embed = create_embed()
         
-    @commands.cooldown(1, 15, BucketType(1))
+    @commands.cooldown(1, 10, BucketType(1))
     @commands.hybrid_command(name="ttt", with_app_command=True,  aliases = ["tictactoe"])
     async def ttt(self, ctx: commands.Context,target_user: discord.Member = None):
         """
         Tic Tac Toe
         """
-        if target_user == None:
-            await ctx.reply("Gotta metion a user")
-            return
-        elif target_user == ctx.author:
-            await ctx.reply("Cant gamble with yourself")
-            return
-        view = TicTacToe(ctx.author, target_user)
-        await ctx.send('Tic Tac Toe: X goes first', view=view)
-        await view.wait()
+        if ctx.channel.id in allowed_channel_ids: # Channel check
+            print("Channel correct")
+            if target_user == None:
+                embed = await self.create_embed.createFlipErrorEmbed(title = "Missing 2nd player", messge = f"{ctx.author.mention} Please mention the 2nd player")
+                await ctx.reply(embed = embed)
+                return
+            elif target_user == ctx.author:
+                embed = await self.create_embed.createFlipErrorEmbed(title = "Self Gamble", messge = f"{ctx.author.mention}Sorry but you cant gamble with yourself")
+                await ctx.reply(embed = embed)
+                return
+            if ctx.author.get_role(blacklist_role_id):
+                embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", messge = f"{ctx.author.mention}Sorry but you are *black Listed* you cant gamble")
+                await ctx.reply(embed = embed)  # Check if author is blacklisted
+
+            elif target_user.get_role(blacklist_role_id):
+                embed = await self.create_embed.createFlipErrorEmbed(title = "BLACKLISTED", message = f"{target_user.mention}Sorry but you are *black Listed* you cant gamble")
+                await ctx.reply(embed = embed) # Check if target user is blacklisted
+                view = TicTacToe(ctx.author, target_user)
+                await ctx.send(f'Tic Tac Toe:{ctx.author.mention} goes first', view=view)
+                await view.wait()
 
         return
+    
+    @ttt.error
+    async def info_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            cooldown_embed = await self.create_embed.createFlipErrorEmbed(title = "Command on Cooldown", message = f'This command is on cooldown! Try  again in {round(error.retry_after, 5)} seconds')
+            await ctx.reply(embed = cooldown_embed)
+        elif isinstance(error, commands.MemberNotFound):
+            membererror_embed = await self.create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+            await ctx.reply(embed = membererror_embed)
  
 async def setup(bot):
     await bot.add_cog(tic_tac_toe(bot))
