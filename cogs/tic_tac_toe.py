@@ -17,6 +17,7 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         assert self.view is not None
         view: TicTacToe = self.view
         state = view.board[self.y][self.x]
+        embed = None
 
         # Check if it's the current player's turn
         if interaction.user != view.current_player:
@@ -43,18 +44,21 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = f'{view.author.mention} WON'
+                content = None
+                embed = await create_embed.createTictactoeresult(view.author, view.target_user, view.author)
             elif winner == view.O:
-                content = f'{view.target_user.mention} WON'
+                content = None
+                embed = await create_embed.createTictactoeresult(view.author, view.target_user, view.target_user)
             else:
-                content = "It's a tie!"
+                content = None
+                embed = await create_embed.createTictactoeresult(view.author, view.target_user, "tie")
 
             for child in view.children:
                 child.disabled = True
 
             view.stop()
 
-        await interaction.response.edit_message(content=content, view=view)
+        await interaction.response.edit_message(content=content, view=view, embed = embed)
 
 
 
@@ -70,6 +74,7 @@ class TicTacToe(discord.ui.View):
         self.current_player = author
         self.author = author
         self.target_user = target_user
+        self.create_embed = create_embed()
         self.board = [
             [0, 0, 0],
             [0, 0, 0],
@@ -119,7 +124,6 @@ class tic_tac_toe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.logger = logevents()
-        self.create_embeds = create_embed()
         self.selected_class = None
         
     @commands.cooldown(1, 15, BucketType(1))
@@ -130,8 +134,14 @@ class tic_tac_toe(commands.Cog):
         """
         if target_user == None:
             await ctx.reply("Gotta metion a user")
+            return
+        elif target_user == ctx.author:
+            await ctx.reply("Cant gamble with yourself")
+            return
         view = TicTacToe(ctx.author, target_user)
         await ctx.send('Tic Tac Toe: X goes first', view=view)
+        await view.wait()
+
         return
  
 async def setup(bot):

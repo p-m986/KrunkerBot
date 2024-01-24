@@ -104,6 +104,33 @@ class create_embed():
         print("Embed made")
         return res
 
+    async def createTictactoeresult(self, author, target_user, winner):
+        print("Making embed")
+        flag = None
+        if winner == "tie":
+            color_ = self.dicerolltie
+            winner = "--TIE--"
+            emote = "<a:tie:1194921053441507349>"
+            flag = True
+        elif winner == author:
+            color_ = self.resultembed
+            winner = author
+            emote = "<a:win:1195251695895183393>"
+        elif winner < target_user:
+            color_ = self.resultembed
+            winner = target_user
+            emote = "<a:win:1195251695895183393>"
+        
+        res = discord.Embed(
+            title = f"DICE ROLL RESULT",
+            description = f"Tic Tac Toe between\n{author.mention} v/s {target_user.mention}",
+            color = color_
+        )
+        res.add_field(
+            name = f"Winner is",
+            value = f"{winner.mention if flag == None else winner} {emote}"
+        )
+
     async def createReferEmbed(self, title, message):
         res = discord.Embed(
             title = f"{title}",
