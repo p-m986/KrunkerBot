@@ -142,7 +142,6 @@ class create_embed():
 
 
     async def createReferEmbed(self, title, message):
-
         print("Making embed")
         print(title)
         print(message)

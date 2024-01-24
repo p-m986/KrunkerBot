@@ -45,13 +45,13 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         if winner is not None:
             if winner == view.X:
                 content = None
-                embed = await create_embed.createTictactoeresult(view.author, view.target_user, view.author)
+                embed = await view.create_embed.createTictactoeresult(view.author, view.target_user, view.author)
             elif winner == view.O:
                 content = None
-                embed = await create_embed.createTictactoeresult(view.author, view.target_user, view.target_user)
+                embed = await view.create_embed.createTictactoeresult(view.author, view.target_user, view.target_user)
             else:
                 content = None
-                embed = await create_embed.createTictactoeresult(view.author, view.target_user, "tie")
+                embed = await view.create_embed.createTictactoeresult(view.author, view.target_user, "tie")
 
             for child in view.children:
                 child.disabled = True
@@ -88,7 +88,7 @@ class TicTacToe(discord.ui.View):
     async def on_timeout(self) -> None:
         for item in self.children:
             item.disabled = True
-        ttt_timeout_embed = await create_embed.createTictactoeTimeout(self.auther, self.target_user, self.current_player)
+        ttt_timeout_embed = await self.create_embed.createTictactoeTimeout(self.auther, self.target_user, self.current_player)
         await self.message.edit(content="", view = self, embed = ttt_timeout_embed)
 
     def check_board_winner(self):
