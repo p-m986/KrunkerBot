@@ -136,7 +136,7 @@ class tic_tac_toe(commands.Cog):
         self.create_embed = create_embed()
         
     @commands.cooldown(1, 10, BucketType(1))
-    @commands.hybrid_command(name="ttt", with_app_command=True,  aliases = ["tictactoe"])
+    @commands.hybrid_command(name="tictactoe", with_app_command=True,  aliases = ["ttt"])
     async def ttt(self, ctx: commands.Context,target_user: discord.Member = None):
         """
         Tic Tac Toe
@@ -161,7 +161,10 @@ class tic_tac_toe(commands.Cog):
                 view = TicTacToe(ctx.author, target_user)
                 await ctx.send(f'Tic Tac Toe:{ctx.author.mention} goes first', view=view)
                 await view.wait()
-
+        else:
+            print("Channel Error..")
+            embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use https://discord.com/channels/1194563432112996362/1194652099494035558")
+            await ctx.reply(embed = embed)
         return
     
     @ttt.error
