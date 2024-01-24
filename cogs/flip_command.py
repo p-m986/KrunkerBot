@@ -82,7 +82,9 @@ class Flip(commands.Cog):
     @commands.cooldown(1, 3, BucketType(2))
     @commands.hybrid_command(name="htf", with_app_command = True, aliases = ["how to flip"])
     async def htf(self, ctx: commands.context):
+        print("here")
         referEmbed = await create_embed.createReferEmbed(title = "How to coinflip?", message = "Refer to [How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How coinflip command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448) ")
+        print("Got embed")
         await ctx.reply(embed = referEmbed)
 
 

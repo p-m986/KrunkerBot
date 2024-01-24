@@ -7,6 +7,7 @@ class create_embed():
         self.fliperror = 0xff7575
         self.referEmbed = 0xefff5c
         self.dicerolltie = 0xefe703
+        self.timeoutColor = 0xffe100
     
     async def createStartEmbed(self, ctx):
         res = discord.Embed(
@@ -131,6 +132,15 @@ class create_embed():
             value = f"{winner.mention if flag == None else winner} {emote}"
         )
 
+    async def createTictactoeTimeout(self, author, target_user, current_player):
+        res = discord.Embed(
+            title = "Tic Tac Toe Timed out",
+            description = f"{current_player.mention} Did not respond..<hmm:1194920622539681813>",
+            color = self.timeoutColor
+        )
+        return res
+
+
     async def createReferEmbed(self, title, message):
         res = discord.Embed(
             title = f"{title}",
@@ -138,3 +148,4 @@ class create_embed():
             color = self.referEmbed,
             timestamp = discord.utils.utcnow()
         )
+        return res

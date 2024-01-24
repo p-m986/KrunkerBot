@@ -26,14 +26,14 @@ class TicTacToeButton(discord.ui.Button['TicTacToe']):
         if state in (view.X, view.O):
             return
 
-        if view.current_player == view.author:
+        if view.current_player == view.author and interaction.user == view.author:
             self.style = discord.ButtonStyle.danger
             self.label = 'X'
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.target_user
             content = f"{view.target_user.mention}'s turn"
-        elif view.current_player == view.target_user:
+        elif view.current_player == view.target_user and interaction.user == view.target_user:
             self.style = discord.ButtonStyle.success
             self.label = 'O'
             self.disabled = True
@@ -84,6 +84,12 @@ class TicTacToe(discord.ui.View):
         for x in range(3):
             for y in range(3):
                 self.add_item(TicTacToeButton(x, y))
+    
+    async def on_timeout(self) -> None:
+        for item in self.children:
+            item.disabled = True
+        ttt_timeout_embed = await create_embed.createTictactoeTimeout(self.auther, self.target_user, self.current_player)
+        await self.message.edit(content="", view = self, embed = ttt_timeout_embed)
 
     def check_board_winner(self):
         for across in self.board:
