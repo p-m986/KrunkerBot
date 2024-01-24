@@ -71,7 +71,7 @@ class TicTacToe(discord.ui.View):
     O = 1
     Tie = 2
 
-    def __init__(self, author, target_user: discord.Member, timeout=15):
+    def __init__(self, author, target_user: discord.Member, timeout=10):
         super().__init__(timeout=timeout)
         self.current_player = author
         self.author = author
@@ -161,7 +161,7 @@ class tic_tac_toe(commands.Cog):
                 return
             else:
                 view = TicTacToe(ctx.author, target_user)
-                await ctx.send(f'Tic Tac Toe:{ctx.author.mention} goes first', view=view)
+                view.message = await ctx.send(f'Tic Tac Toe:{ctx.author.mention} goes first', view=view)
                 await view.wait()
         else:
             print("Channel Error..")
