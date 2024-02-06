@@ -7,8 +7,8 @@ import discord
 import asyncio
 import random
 # from configuration import blacklist_role_id, allowed_channel_ids
-blacklist_role_id=1194577286641492069
-allowed_channel_ids=[1194652099494035558, 1194653134811832451]
+blacklist_role_id=1204265320857083965
+allowed_channel_ids=[1202920194843090965]
 
 
 def generate_flip_result(bo):
@@ -83,7 +83,7 @@ class Flip(commands.Cog):
     @commands.hybrid_command(name="htf", with_app_command = True, aliases = ["how to flip"])
     async def htf(self, ctx: commands.context):
         print("here")
-        referEmbed = await self.create_embed.createReferEmbed(title = "How to coinflip?", message = "Refer to \n[How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How coinflip command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448) ")
+        referEmbed = await self.create_embed.createReferEmbed(title = "How to coinflip?", message = "To Be added soon.. Please contact staff for help for now")
         print("Got embed")
         await ctx.reply(embed = referEmbed)
 
@@ -114,11 +114,11 @@ class Flip(commands.Cog):
                 await ctx.reply(embed = embed) # Check if target user is blacklisted
 
             elif bo == None or target_user == None:
-                embed = await self.create_embed.createFlipErrorEmbed(title = "INCOMPLETE COMMAND", message = "*Sorry but your command is incomplete, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
+                embed = await self.create_embed.createFlipErrorEmbed(title = "INCOMPLETE COMMAND", message = "*Sorry but your command is incomplete, To be added soon.. Please contact staff for help*")
                 await ctx.reply(embed = embed)
 
             elif target_user.id == ctx.author.id:
-                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
+                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, To be added soon.. Please contact staff for help*")
                 await ctx.reply(embed = embed)
             
             else:
@@ -152,7 +152,7 @@ class Flip(commands.Cog):
             await ctx.reply(embed = cooldown_embed)
         elif isinstance(error, commands.MemberNotFound):
             create_embed = create_embed()
-            membererror_embed = await create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+            membererror_embed = await create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\nTo be added soon.. Please contact staff for help")
             await ctx.reply(embed = membererror_embed)
 
     @htf.error

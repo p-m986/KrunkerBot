@@ -6,8 +6,8 @@ from cogs.controllers.create_embed import create_embed
 from typing import List
 import discord
 
-blacklist_role_id=1194577286641492069
-allowed_channel_ids=[1194652099494035558, 1194653134811832451]
+blacklist_role_id=1204265320857083965
+allowed_channel_ids=[1202920194843090965]
 
 class TicTacToeButton(discord.ui.Button['TicTacToe']):
     def __init__(self, x: int, y: int):
@@ -165,7 +165,7 @@ class tic_tac_toe(commands.Cog):
                 await view.wait()
         else:
             print("Channel Error..")
-            embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use https://discord.com/channels/1194563432112996362/1194652099494035558")
+            embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use https://discord.com/channels/1091713971792388209/1202919256375689236")
             await ctx.reply(embed = embed)
         return
     

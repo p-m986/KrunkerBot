@@ -6,8 +6,8 @@ from cogs.controllers.create_embed import create_embed
 import discord
 import random
 # from configuration import blacklist_role_id, allowed_channel_ids
-blacklist_role_id=1194577286641492069
-allowed_channel_ids=[1194652099494035558, 1194653134811832451]
+blacklist_role_id=1204265320857083965
+allowed_channel_ids=[1202920194843090965]
 
 def generate_diceroll_result():
     print("Generating")
@@ -63,7 +63,7 @@ class Diceroll(commands.Cog):
     @commands.cooldown(1, 3, BucketType(2))
     @commands.hybrid_command(name="htr", with_app_command = True, aliases = ["how to roll", "htdr"])
     async def htr(self, ctx: commands.context):
-        referEmbed = await self.create_embed.createReferEmbed(title = "How to diceroll works?", message = "Refer to [How it works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195661941998358599)\n[How Dice roll command works](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+        referEmbed = await self.create_embed.createReferEmbed(title = "How to diceroll works?", message = "To be added soon.. Please contact staff for help")
         await ctx.reply(embed = referEmbed)
 
 
@@ -92,11 +92,11 @@ class Diceroll(commands.Cog):
                 await ctx.reply(embed = embed) # Check if target user is blacklisted
 
             elif target_user == None:
-                embed = await self.create_embed.createFlipErrorEmbed(title = "INCOMPLETE COMMAND", message = "*Sorry but your command is incomplete, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
+                embed = await self.create_embed.createFlipErrorEmbed(title = "INCOMPLETE COMMAND", message = "*Sorry but your command is incomplete, To be added soon.. Please contact staff for help*")
                 await ctx.reply(embed = embed)
 
             elif target_user.id == ctx.author.id:
-                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, Refer to [Exaple](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)*")
+                embed = await self.create_embed.createFlipErrorEmbed(title = "ERROR", message = "*Sorry but you cant gamble with yourself, To be added soon.. Please contact staff for help*")
                 await ctx.reply(embed = embed)
             
             else:
@@ -121,7 +121,7 @@ class Diceroll(commands.Cog):
             await ctx.reply(embed = cooldown_embed)
         elif isinstance(error, commands.MemberNotFound):
             create_embed = create_embed()
-            membererror_embed = await create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\n[REFER HERE FOR EXAPLE](https://discord.com/channels/1194563432112996362/1194651573297623081/1195671288681873448)")
+            membererror_embed = await create_embed.createFlipErrorEmbed(title = "Not a member", message = "This is not a valid user in server or You entered the command incorrect\nTo be added soon.. Please contact staff for help")
             await ctx.reply(embed = membererror_embed)
 
     @htr.error
