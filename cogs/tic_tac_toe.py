@@ -7,7 +7,7 @@ from typing import List
 import discord
 
 blacklist_role_id=1204265320857083965
-allowed_channel_ids=[1202920194843090965]
+allowed_channel_ids=[1202919256375689236]
 
 class TicTacToeButton(discord.ui.Button['TicTacToe']):
     def __init__(self, x: int, y: int):

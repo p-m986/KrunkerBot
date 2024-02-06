@@ -8,7 +8,7 @@ import asyncio
 import random
 # from configuration import blacklist_role_id, allowed_channel_ids
 blacklist_role_id=1204265320857083965
-allowed_channel_ids=[1202920194843090965]
+allowed_channel_ids=[1202919256375689236]
 
 
 def generate_flip_result(bo):
@@ -141,7 +141,7 @@ class Flip(commands.Cog):
                     await ctx.reply(embed = embed)
         else:
             print("Channel Error..")
-            embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use #ps99-casino")
+            embed = await self.create_embed.createFlipErrorEmbed(title = "Wrong Channel", message = "Not the best place to do this, Use https://discord.com/channels/1091713971792388209/1202919256375689236")
             await ctx.reply(embed = embed)
 
     @flip.error
